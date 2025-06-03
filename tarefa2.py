@@ -6,6 +6,7 @@ from mininet.node import CPULimitedHost
 from mininet.link import TCLink
 from mininet.util import dumpNodeConnections
 from mininet.log import setLogLevel
+from mininet.cli import CLI
 
 class CustomTopo(Topo):
     "Topologia personalizada com 4 switches e 11 hosts."
@@ -46,7 +47,7 @@ class CustomTopo(Topo):
         self.addLink(s1, s2)
         self.addLink(s2, s3)
         self.addLink(s3, s4)
-        self.addLink(s1, s4)  # criando redundância
+        #self.addLink(s1, s4)  # criando redundância
 
 def perfTest(net):
     "Testa a largura de banda entre h1 e todos os outros hosts."
@@ -69,5 +70,13 @@ if __name__ == '__main__':
     dumpNodeConnections(net.hosts)
     print("Testando conectividade da rede:")
     net.pingAll()
+
+    h1 = net.get('h1')
+    print("Executando comando no h1: criando um arquivo de teste.")
+    h1.cmd('echo "Olá Mininet!" > /tmp/arquivo_teste.txt')
+    resultado = h1.cmd('cat /tmp/arquivo_teste.txt')
+    print("Conteúdo do arquivo em h1:", resultado)
+
     perfTest(net)
+    CLI(net)
     net.stop()
